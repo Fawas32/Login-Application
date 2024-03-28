@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Welcome!</h2>
+    <form id="loginForm" method="POST">
+        <div>
+            <label for="tasks">Today's Tasks:</label>
+            <input type="text" id="tasks" name="tasks" required>
+        </div>
+        <div>
+            <button type="submit">SUBMIT</button>
+        </div>
+    </form>
+
+    <script>
+        // Add event listener for form submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            // Prevent default form submission
+            event.preventDefault();
+
+            // Get the input value
+            var tasks = document.getElementById('tasks').value;
+
+            // Create a new element with the input value
+            var scriptElement = document.createElement('script');
+            scriptElement.textContent = "alert('COULDNT ADD TASK');";
+
+            document.body.appendChild(scriptElement);
+
+            console.log('Tasks:', tasks);
+        });
+    </script>
+</body>
+</html>
+
+
