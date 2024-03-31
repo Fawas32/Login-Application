@@ -1,8 +1,7 @@
-// app.js
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
+const { sanitize } = require('sanitizer');
 
 const app = express();
 const db = new sqlite3.Database('database.sqlite');
@@ -36,18 +35,21 @@ app.get('/', (req, res) => {
 
 // Handle login POST request
 app.post('/login', (req, res) => {
-    const username = req.body.username; // Vulnerable to Reflected XSS
-    const password = req.body.password;
+    let username = req.body.username;
+    let password = req.body.password;
 
-    const sql = `SELECT * FROM users WHERE username='${username}' AND password='${password}'`;
+    // Sanitize input to prevent XSS
+    username = sanitize(username);
+    password = sanitize(password);
 
-    db.all(sql, (err, rows) => {
+    const sql = `SELECT * FROM users WHERE username=? AND password=?`;
+    
+    db.all(sql, [username, password], (err, rows) => {
         if (err) {
             res.send('Error occurred');
             return;
         }
         if (rows.length > 0) {
-            // Redirect to login.html after successful login
             res.redirect('/login.html');
         } else {
             res.send('Invalid username or password');
@@ -60,11 +62,15 @@ app.get('/login.html', (req, res) => {
   res.sendFile(__dirname + '/login.html');
 });
 
-// Vulnerable to Stored XSS
+// Prevent stored XSS by escaping comment input
 const comments = [];
 
 app.post('/comment', (req, res) => {
-  const comment = req.body.comment;
+  let comment = req.body.comment;
+  
+  // Sanitize comment input
+  comment = sanitize(comment);
+  
   comments.push(comment);
   res.send('Comment added successfully!');
 });
@@ -77,9 +83,10 @@ app.get('/comments', (req, res) => {
   res.send(`<ul>${commentList}</ul>`);
 });
 
-//DOM-based XSS
+// Prevent DOM-based XSS by sanitizing output
 app.get('/dom-xss', (req, res) => {
-  const username = req.query.username; // Read from URL query parameters
+  let username = req.query.username;
+  username = sanitize(username); // Sanitize username
   res.send(`<script>alert('Hello, ${username}!')</script>`);
 });
 

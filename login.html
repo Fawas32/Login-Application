@@ -17,6 +17,8 @@
         </div>
     </form>
 
+    <div id="message"></div>
+
     <script>
         // Add event listener for form submission
         document.getElementById('loginForm').addEventListener('submit', function(event) {
@@ -26,16 +28,10 @@
             // Get the input value
             var tasks = document.getElementById('tasks').value;
 
-            // Create a new element with the input value
-            var scriptElement = document.createElement('script');
-            scriptElement.textContent = "alert('COULDNT ADD TASK');";
-
-            document.body.appendChild(scriptElement);
-
-            console.log('Tasks:', tasks);
+            // Display success message
+            var messageElement = document.getElementById('message');
+            messageElement.textContent = 'Successfully added: ' + tasks;
         });
     </script>
 </body>
 </html>
-
-
