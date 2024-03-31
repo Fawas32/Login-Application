@@ -11,7 +11,7 @@ const db = new sqlite3.Database('database.sqlite');
 db.serialize(() => {
   db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)");
 
-  // Insert sample users if the table is empty
+  
   db.get("SELECT COUNT(*) as count FROM users", (err, row) => {
     if (err) {
       console.error(err.message);
@@ -26,7 +26,7 @@ db.serialize(() => {
   });
 });
 
-// Body parser middleware
+// Body parser
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Serve HTML file for login
@@ -77,7 +77,7 @@ app.get('/comments', (req, res) => {
   res.send(`<ul>${commentList}</ul>`);
 });
 
-// Vulnerable to DOM-based XSS
+//DOM-based XSS
 app.get('/dom-xss', (req, res) => {
   const username = req.query.username; // Read from URL query parameters
   res.send(`<script>alert('Hello, ${username}!')</script>`);
